@@ -1,0 +1,1323 @@
+/* ===== 1. Design values (from PillNurse reference) ===== */
+
+/* DM Sans from Google Fonts (must stay above all other rules) */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap");
+
+/* Values taken from PillNurse-web-UI and used directly in the rules below:
+   Mint:   #00e8b0 (hover)  #02d1a0 (links, icons)  #a1f6d9 (buttons, tags)
+   Yellow: #feffba (nav hover)
+   Greys:  #f8f8f8 / #f4f4f4 (light backgrounds)  #e1e1e1 (borders)  #cdcdcd (input border)
+   Text:   #000000 (body)  #444444 (headings)  #959595 (muted)
+   Bars:   #a1f6d9 (fat)  #02d1a0 (carbs)  #3776ff (protein)   (History page)
+   Donuts: #02d1a0 calories  #cf9545 carbs  #3776ff protein  #444444 fat   (Menu page)
+   Radius: 30px (pills)  20px (cards)
+   Header height: 64px */
+
+/* ===== 2. Base / Reset ===== */
+
+/* Box sizing and margin reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Keep scrolled-to sections clear of the fixed 64px header */
+html {
+  scroll-padding-top: 80px;
+}
+
+/* Page background, default text color and size */
+body {
+  background-color: #ffffff;
+  color: #000000;
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Links inherit color, no underline */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Lists used for layout, not bullets */
+ul {
+  list-style: none;
+}
+
+/* Highlighted values inside sentences (grams, calories, meal type) */
+strong {
+  font-weight: 600;
+}
+
+/* Form controls use the page font */
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+/* Mint pill button, uppercase like the reference CTAs (used on all pages) */
+.pill-button {
+  display: inline-block;
+  padding: 10px 40px;
+  border: 1px solid #a1f6d9;
+  border-radius: 30px;
+  background-color: #a1f6d9;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pill-button:hover {
+  background-color: #00e8b0;
+}
+
+/* Dimmed when there is nothing to act on (e.g. Save meal with no items) */
+.pill-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pill-button:disabled:hover {
+  background-color: #a1f6d9;
+}
+
+/* Shared card heading (scanner, Information, Today's Meals) */
+.panel-title {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #444444;
+}
+
+/* ===== 3. Header & Navigation ===== */
+
+/* Top bar: stays fixed at the top while scrolling, links on the right, thin bottom border
+   (z-index keeps it above the page content and the search suggestions) */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 24px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+/* Small logo on the left of the header (inner pages only) */
+.header-logo img {
+  display: block;
+  width: 92px;
+  height: auto;
+}
+
+/* Nav links always sit on the right, with or without the logo */
+.site-nav {
+  margin-left: auto;
+}
+
+/* Horizontal nav link list */
+.nav-links {
+  display: flex;
+  gap: 6px;
+}
+
+/* Pill-shaped nav link with yellow hover, as in the reference sidebar */
+.nav-links a {
+  display: block;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #444444;
+  transition: background-color 0.2s ease;
+}
+
+.nav-links a:hover {
+  background-color: #feffba;
+}
+
+/* ===== 4. Page 1 – Search ===== */
+
+/* Full-height centered area below the header */
+.search-page {
+  display: flex;
+  justify-content: center;
+  min-height: calc(100vh - 64px);
+  padding: 18vh 16px 40px;
+}
+
+/* Column holding logo, search bar and button */
+.search-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 640px;
+}
+
+/* Logo with "Meal Scan" tucked under it */
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Large centered logo */
+.brand-logo {
+  display: block;
+  width: 100px;
+  height: auto;
+}
+
+/* Small subtitle under the logo (like "images" under Google) */
+.brand-subtitle {
+  margin-top: 6px;
+  font-size: 26px;
+  font-weight: 500;
+  color: #000;
+}
+
+/* Wrapper so the dropdown can sit right below the input */
+.search-bar {
+  position: relative;
+  width: 100%;
+}
+
+/* On the Menu page: same width as on the first page, centred above the Menu box */
+.scan-main > .search-bar {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* Pill-shaped field containing icons and the input */
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 24px;
+  background-color: #ffffff;
+  border: 1px solid #cdcdcd;
+  border-radius: 30px;
+  transition: border-color 0.2s ease;
+}
+
+/* Mint border instead of a shadow when hovered or typing */
+.search-field:hover,
+.search-field:focus-within {
+  border-color: #cdcdcd;
+}
+
+/* Text input fills the space between the icons */
+.search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 14px;
+}
+
+.search-input::placeholder {
+  color: #959595;
+}
+
+/* Static line icon (camera) */
+.search-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: #959595;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Bare button wrapping an icon (camera) */
+.icon-button {
+  display: flex;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.icon-button:hover .search-icon {
+  stroke: #02d1a0;
+}
+
+/* ===== 5. Page 1 – Suggestions dropdown & scanning view ===== */
+
+/* Floating list directly below the search field */
+.suggestions {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px 0;
+  background-color: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 20px;
+}
+
+/* One clickable suggestion row: photo, name, kcal */
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 24px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #f4f4f4;
+}
+
+/* Small rounded food photo at the start of each suggestion */
+.suggestion-image {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.suggestion-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+/* kcal per serving on the right */
+.suggestion-kcal {
+  font-size: 12px;
+  color: #959595;
+}
+
+/* Panel below the search bar that shows the chosen photo while it is "scanned" */
+.scanner-panel {
+  margin-top: 10px;
+  padding: 16px;
+  background-color: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 20px;
+}
+
+/* Dashed viewfinder box */
+.scanner-view {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 200px;
+  overflow: hidden;
+  background-color: #f8f8f8;
+  border: 2px dashed #02d1a0;
+  border-radius: 20px;
+}
+
+/* Moving mint line across the viewfinder */
+.scanner-view::after {
+  content: "";
+  position: absolute;
+  top: 15%;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background-color: #00e8b0;
+  animation: scan-line 2s ease-in-out infinite alternate;
+}
+
+@keyframes scan-line {
+  to {
+    top: 85%;
+  }
+}
+
+/* Scanning view: the chosen photo fills the viewfinder under the moving scan line */
+.scanning-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* "Scanning your meal…" label on top of the photo */
+.scanning-text {
+  position: relative;
+  z-index: 1;
+  padding: 6px 16px;
+  border-radius: 30px;
+  background-color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444444;
+}
+
+/* ===== 6. Page 2 – Scan ===== */
+
+/* Two columns: scan area on the left, fixed Listing panel on the right */
+.scan-page {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  padding: 40px 24px;
+}
+
+/* Left column: Menu box stacked above the AI Analysis & Summary box */
+.scan-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* White bordered card: Information box and Today's Meals panel */
+.listing,
+.info-box {
+  padding: 24px;
+  background-color: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 20px;
+}
+
+/* Menu title on the left, Add Menu button on the right */
+.info-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.info-head .panel-title {
+  margin-bottom: 0;
+}
+
+/* Note under the Menu title while a Today's Meals item is being reviewed */
+.review-note {
+  margin: -6px 0 16px;
+  font-size: 13px;
+  color: #959595;
+}
+
+/* Nutrition result sections stacked inside the Menu box */
+.scan-result {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Today's Meals (right column): stays fixed in view while the page scrolls, just under
+   the fixed header (64px header + 24px gap = 88px), one screen tall
+   (64px header + 40px page padding + 24px bottom gap = 128px), Save meal at the bottom */
+.listing {
+  position: sticky;
+  top: 88px;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 128px);
+}
+
+/* Under Save meal while it is greyed out: says why */
+.save-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  text-align: center;
+  color: #959595;
+}
+
+/* AI Analysis & Summary box under the Menu box: mint border, 2–3 lines of text */
+.ai-summary {
+  padding: 20px 24px;
+  background-color: #ffffff;
+  border: 1px solid #a1f6d9;
+  border-radius: 20px;
+}
+
+.ai-summary-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #444444;
+}
+
+/* Mint sparkle icon */
+.ai-summary-title svg {
+  width: 20px;
+  height: 20px;
+  fill: #a1f6d9;
+  stroke: #02d1a0;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+/* Never more than 3 lines */
+.ai-summary-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #444444;
+}
+
+/* Shows only the saved meals that fit (newest first, no scroll bar);
+   the last visible one fades out instead of being cut off sharply */
+.saved-list {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000000 85%, transparent);
+}
+
+/* One saved meal: day · date · time, then the items */
+.saved-item {
+  display: block;
+  width: 100%;
+  padding: 12px 8px;
+  border: 0;
+  border-bottom: 1px solid #f4f4f4;
+  border-left: 3px solid transparent;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.saved-item:hover {
+  background-color: #f8f8f8;
+}
+
+/* The entry being reviewed in the card: grey with a mint bar on the left */
+.saved-item.selected {
+  border-left-color: #02d1a0;
+  background-color: #f8f8f8;
+}
+
+.saved-when {
+  display: block;
+  font-size: 12px;
+  color: #959595;
+}
+
+.saved-when strong {
+  color: #444444;
+}
+
+/* Small mint "Saved" label once Save meal has added the entry to History */
+.saved-tag {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 30px;
+  background-color: #a1f6d9;
+  font-size: 11px;
+  font-weight: 500;
+  color: #444444;
+}
+
+.saved-items {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Shown until a meal is added */
+.saved-empty {
+  padding-top: 12px;
+  font-size: 13px;
+  color: #959595;
+}
+
+/* Full-width Save meal button at the bottom of the panel */
+.listing .pill-button {
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* ===== 6a. Scan – Plate list ===== */
+
+/* Small uppercase label above the plate list */
+.section-label {
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #959595;
+}
+
+/* Items on the plate (shown when there are 2 or more), in the order they were added */
+.plate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Row: clickable image/name/chips area, then the quantity control on the right;
+   the selected row (shown in the card below) gets a mint outline */
+.plate-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background-color: #f8f8f8;
+}
+
+.plate-item:hover {
+  border-color: #e1e1e1;
+}
+
+.plate-item.selected {
+  border-color: #02d1a0;
+  background-color: #ffffff;
+}
+
+/* Plain button filling the row up to the quantity control */
+.plate-select {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Item image: the uploaded photo, or a mint tile with the first letter */
+.plate-thumb {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #a1f6d9;
+  object-fit: cover;
+  font-size: 18px;
+  font-weight: 600;
+  color: #444444;
+}
+
+.plate-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Shown when every item has been removed */
+.plate-empty {
+  font-size: 13px;
+  color: #959595;
+}
+
+/* "− 1 piece +" quantity pill (plate rows and the card's Quantity control):
+   fixed width so every row's control lines up, whatever the unit */
+.serving-control {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 170px;
+  padding: 4px;
+  background-color: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
+}
+
+/* Quantity text centred between − and + */
+.serving-control span {
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Black − / + on a light grey circle */
+.serving-control button {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background-color: #f4f4f4;
+  color: #000000;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.serving-control button:hover {
+  background-color: #a1f6d9;
+}
+
+/* ===== 6b. Scan – Result card (photo & details) ===== */
+
+/* Photo + details card on the left, nutrient donuts column on the right */
+.result {
+  display: grid;
+  grid-template-columns: 1fr 210px;
+  gap: 16px;
+}
+
+/* Light grey card: small square photo left, details right (like a food-database entry) */
+.result-card {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: start;
+  gap: 20px;
+  padding: 16px;
+  background-color: #f8f8f8;
+  border-radius: 20px;
+}
+
+/* Square food photo, cropped to fit */
+.result-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.result-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Bold food name with a grey line under it (meal type · time added) */
+.result-name {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.result-source {
+  margin-top: -6px;
+  font-size: 13px;
+  color: #959595;
+}
+
+/* Meal type pill (History page meals) */
+.meal-type {
+  padding: 4px 16px;
+  border-radius: 30px;
+  background-color: #a1f6d9;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444444;
+}
+
+/* Quantity control and Portion size dropdown side by side */
+.portion-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 24px;
+}
+
+.portion-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #959595;
+}
+
+/* "See all nutrients": a small grey toggle above the table */
+.all-nutrients summary {
+  width: fit-content;
+  font-size: 13px;
+  color: #959595;
+  cursor: pointer;
+}
+
+/* Nutrient name on the left, amount on the right, thin lines between rows */
+.nutrient-table {
+  width: 100%;
+  margin-top: 6px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.nutrient-table th,
+.nutrient-table td {
+  padding: 5px 4px;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.nutrient-table th {
+  text-align: left;
+  font-weight: 400;
+}
+
+.nutrient-table td {
+  text-align: right;
+  font-weight: 500;
+}
+
+/* Add Food Item under the table */
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-top: 6px;
+}
+
+/* ===== 6c. Scan – Nutrient donuts ===== */
+
+/* Stack of nutrient tiles beside the result card */
+.nutrient-list {
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* One light grey tile: small donut on the left, label and amount on the right.
+   Fixed size and kept at the top, so opening "See all nutrients" does not stretch them */
+.nutrient-tile {
+  display: flex;
+  align-items: center;
+  height: 96px;
+  gap: 12px;
+  padding: 12px 14px;
+  background-color: #f8f8f8;
+  border-radius: 20px;
+}
+
+/* Donut with the % of daily value in its centre */
+.mini-donut {
+  position: relative;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+}
+
+.mini-donut svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mini-donut-track,
+.mini-donut-fill {
+  fill: none;
+  stroke-width: 4;
+}
+
+.mini-donut-track {
+  stroke: #e1e1e1;
+}
+
+.mini-donut-fill {
+  stroke-linecap: round;
+  stroke-dashoffset: 25;
+}
+
+.mini-donut-percent {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Ring colours from the PillNurse palette: calories mint, carbs amber,
+   protein blue, fat dark grey */
+.calories .mini-donut-fill {
+  stroke: #02d1a0;
+}
+
+.carbs .mini-donut-fill {
+  stroke: #cf9545;
+}
+
+.protein .mini-donut-fill {
+  stroke: #3776ff;
+}
+
+.fat .mini-donut-fill {
+  stroke: #444444;
+}
+
+/* Ring size: fill-N shows N% (rounded to 5%) as dasharray "N rest" on a 100-unit circle,
+   starting at 12 o'clock */
+.mini-donut-fill.fill-0 {
+  stroke-dasharray: 0 100;
+}
+
+.mini-donut-fill.fill-5 {
+  stroke-dasharray: 5 95;
+}
+
+.mini-donut-fill.fill-10 {
+  stroke-dasharray: 10 90;
+}
+
+.mini-donut-fill.fill-15 {
+  stroke-dasharray: 15 85;
+}
+
+.mini-donut-fill.fill-20 {
+  stroke-dasharray: 20 80;
+}
+
+.mini-donut-fill.fill-25 {
+  stroke-dasharray: 25 75;
+}
+
+.mini-donut-fill.fill-30 {
+  stroke-dasharray: 30 70;
+}
+
+.mini-donut-fill.fill-35 {
+  stroke-dasharray: 35 65;
+}
+
+.mini-donut-fill.fill-40 {
+  stroke-dasharray: 40 60;
+}
+
+.mini-donut-fill.fill-45 {
+  stroke-dasharray: 45 55;
+}
+
+.mini-donut-fill.fill-50 {
+  stroke-dasharray: 50 50;
+}
+
+.mini-donut-fill.fill-55 {
+  stroke-dasharray: 55 45;
+}
+
+.mini-donut-fill.fill-60 {
+  stroke-dasharray: 60 40;
+}
+
+.mini-donut-fill.fill-65 {
+  stroke-dasharray: 65 35;
+}
+
+.mini-donut-fill.fill-70 {
+  stroke-dasharray: 70 30;
+}
+
+.mini-donut-fill.fill-75 {
+  stroke-dasharray: 75 25;
+}
+
+.mini-donut-fill.fill-80 {
+  stroke-dasharray: 80 20;
+}
+
+.mini-donut-fill.fill-85 {
+  stroke-dasharray: 85 15;
+}
+
+.mini-donut-fill.fill-90 {
+  stroke-dasharray: 90 10;
+}
+
+.mini-donut-fill.fill-95 {
+  stroke-dasharray: 95 5;
+}
+
+.mini-donut-fill.fill-100 {
+  stroke-dasharray: 100 0;
+}
+
+/* Muted label above the bold amount */
+.nutrient-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.nutrient-label {
+  font-size: 12px;
+  color: #959595;
+}
+
+.nutrient-value {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.nutrient-value small {
+  font-size: 12px;
+  font-weight: 400;
+  color: #959595;
+}
+
+/* ===== 6d. History page – day boxes with meals (MealList) ===== */
+
+/* "History" on the left, period filter and View all on the right */
+.meal-list-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.meal-list-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Rounded dropdown (Portion size, period filter, Sort by): the browser's arrow is replaced
+   by a dark chevron 12px in from the right edge, with room for it in the right padding */
+.select {
+  appearance: none;
+  padding: 6px 34px 6px 14px;
+  border: 1px solid #e1e1e1;
+  border-radius: 30px;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23444444' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: #000000;
+  cursor: pointer;
+}
+
+/* Meal-type tabs on the left, Sort by on the right */
+.meal-list-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Tabs sit in one light grey pill; the selected tab turns mint */
+.type-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 30px;
+  background-color: #f4f4f4;
+  overflow-x: auto;
+}
+
+.type-tab {
+  padding: 6px 16px;
+  border: 0;
+  border-radius: 30px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444444;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.type-tab.active {
+  background-color: #a1f6d9;
+  color: #000000;
+}
+
+.sort-by {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #959595;
+}
+
+/* Stack of day boxes (at most 4) */
+.day-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* One day: light grey box with the date + totals, then that day's meals */
+.day-box {
+  padding: 16px;
+  background-color: #f8f8f8;
+  border-radius: 20px;
+}
+
+/* Clickable date row: title, totals and a chevron (default marker hidden) */
+.day-box-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.day-box-head::-webkit-details-marker {
+  display: none;
+}
+
+.day-box-head .nutrient-chips {
+  margin-left: auto;
+}
+
+/* Space under the date row and a flipped chevron only while the day is open */
+.day-box[open] .day-box-head {
+  margin-bottom: 12px;
+}
+
+.day-box[open] .chevron {
+  transform: rotate(180deg);
+}
+
+.day-box-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.day-meals {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* One meal inside a day box: photo, then tags/name/chips */
+.meal-card {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 16px;
+}
+
+.meal-card-image {
+  width: 96px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.meal-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meal-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.meal-card-name {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Small white chip (date/time and nutrient amounts) */
+.nutrient-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  padding: 3px 10px;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  background-color: #ffffff;
+  font-size: 12px;
+  color: #959595;
+}
+
+.chip strong {
+  color: #444444;
+}
+
+/* Weight / quantity / portion chips under the food name: highlighted light-blue badges
+   with a PillNurse-blue outline */
+.detail-chips .chip {
+  padding: 4px 12px;
+  border-color: #3776ff;
+  border-radius: 30px;
+  background-color: #eaf1ff;
+  font-weight: 500;
+  color: #000000;
+}
+
+/* ===== 7. Page 3 – History ===== */
+
+/* Centered page column */
+.history-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 16px;
+}
+
+/* Page heading (History page) */
+.page-title {
+  font-size: 21px;
+  font-weight: 700;
+  color: #000000;
+}
+
+/* Chevron on each day box: points down when closed (rotated when open, see 6d) */
+.chevron {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: #444444;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s ease;
+}
+
+/* Shown when a filter has no days */
+.history-empty {
+  font-size: 13px;
+  color: #959595;
+}
+
+/* ===== 8. Responsive ===== */
+
+/* Stop the scanner line animation for users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  .scanner-view::after {
+    animation: none;
+  }
+}
+
+/* Narrower screens: nutrient donuts move under the result card as a row */
+@media (max-width: 1200px) {
+  .result {
+    grid-template-columns: 1fr;
+  }
+
+  .nutrient-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablets and below: Today's Meals drops under the scan area and shows every meal */
+@media (max-width: 900px) {
+  .scan-page {
+    grid-template-columns: 1fr;
+  }
+
+  .listing {
+    position: static;
+    height: auto;
+  }
+
+  .saved-list {
+    overflow: visible;
+    mask-image: none;
+  }
+}
+
+/* Phones: tighter header, smaller logo, stacked result card, history rows and meal cards */
+@media (max-width: 600px) {
+  .site-header {
+    padding: 0 16px;
+  }
+
+  .header-logo img {
+    width: 72px;
+  }
+
+  .nav-links a {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .search-page {
+    padding-top: 12vh;
+  }
+
+  .brand-logo {
+    width: 170px;
+  }
+
+  .search-field {
+    padding: 0 16px;
+  }
+
+  .plate-item {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .plate-item .serving-control {
+    margin-left: auto;
+  }
+
+  .result-card {
+    grid-template-columns: 1fr;
+  }
+
+  .result-image {
+    width: 100%;
+    height: 200px;
+  }
+
+  .meal-card {
+    grid-template-columns: 72px 1fr;
+    gap: 12px;
+  }
+
+  .meal-card-image {
+    width: 72px;
+    height: 64px;
+  }
+
+}
