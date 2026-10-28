@@ -260,6 +260,26 @@ input {
   stroke: #02d1a0;
 }
 
+/* Mic while listening: mint icon that gently pulses */
+.icon-button.listening .search-icon {
+  stroke: #02d1a0;
+  animation: mic-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes mic-pulse {
+  to {
+    opacity: 0.35;
+  }
+}
+
+/* Message under the search bar when voice input can't be used */
+.voice-hint {
+  margin-top: 6px;
+  padding: 0 24px;
+  font-size: 12px;
+  color: #959595;
+}
+
 /* ===== 5. Page 1 – Suggestions dropdown & scanning view ===== */
 
 /* Floating list directly below the search field */
@@ -620,20 +640,13 @@ input {
   cursor: pointer;
 }
 
-/* Item image: the uploaded photo, or a mint tile with the first letter */
+/* Item image: the uploaded photo, or the default food photo, cropped to a rounded square */
 .plate-thumb {
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background-color: #a1f6d9;
   object-fit: cover;
-  font-size: 18px;
-  font-weight: 600;
-  color: #444444;
 }
 
 .plate-name {
@@ -1228,9 +1241,10 @@ input {
 
 /* ===== 8. Responsive ===== */
 
-/* Stop the scanner line animation for users who prefer less motion */
+/* Stop the scanner line and mic pulse animations for users who prefer less motion */
 @media (prefers-reduced-motion: reduce) {
-  .scanner-view::after {
+  .scanner-view::after,
+  .icon-button.listening .search-icon {
     animation: none;
   }
 }

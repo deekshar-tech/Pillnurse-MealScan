@@ -56,6 +56,20 @@ export const foodInfo = {
     calories: 110, protein: 0, carbs: 28, fat: 0, fiber: 0.2, sugars: 26, satFat: 0,
     cholesterol: 0, sodium: 10, calcium: 10, iron: 0.1, potassium: 50, vitaminC: 12,
   },
+  "Burger": {
+    fullName: "Classic Beef Burger with Cheese",
+    mealType: "Lunch",
+    weight: 220,
+    calories: 540, protein: 28, carbs: 40, fat: 29, fiber: 2, sugars: 8, satFat: 12,
+    cholesterol: 85, sodium: 980, calcium: 180, iron: 4.5, potassium: 420, vitaminC: 1,
+  },
+  "French Fries": {
+    fullName: "Crispy Salted French Fries",
+    mealType: "Snack",
+    weight: 117,
+    calories: 365, protein: 4, carbs: 48, fat: 17, fiber: 4.4, sugars: 0.3, satFat: 2.3,
+    cholesterol: 0, sodium: 246, calcium: 18, iron: 0.9, potassium: 680, vitaminC: 4.7,
+  },
 };
 
 // Estimate used for foods not listed above (e.g. ones typed or picked in the search bar)

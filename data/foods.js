@@ -1,5 +1,8 @@
-// Hardcoded food names used for the search suggestions on the Search page.
+// Hardcoded food names used for the search suggestions and to match spoken foods
+// (voice input) in the search bar.
 const foods = [
+  "Burger",
+  "French Fries",
   "Dosa",
   "Masala Dosa",
   "Rava Dosa",

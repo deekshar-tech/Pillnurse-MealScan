@@ -93,14 +93,18 @@ function plateSummary(plate) {
   return `${items}, about ${totals.calories} kcal: ${protein}, ${carbs}. ${tip}`;
 }
 
-// The item's uploaded photo, or a mint tile with its first letter
+// The item's uploaded photo, or the default food photo (e.g. for typed or spoken foods)
 function Thumb({ item }) {
   return item.image ? (
     <img className="plate-thumb" src={item.image} alt={item.name} />
   ) : (
-    <span className="plate-thumb" aria-hidden="true">
-      {item.name[0]}
-    </span>
+    <Image
+      className="plate-thumb"
+      src={defaultMealImage}
+      alt={item.name}
+      width={840}
+      height={1200}
+    />
   );
 }
 

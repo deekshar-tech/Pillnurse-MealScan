@@ -7,7 +7,11 @@
 // adds that food and opens /scan with its full info, then clears the box.
 // The camera button opens the photo picker; once a photo is chosen it is shown with a
 // short "Scanning your meal…" animation, then the scanned item is added and /scan opens.
-import { useRef, useState } from "react";
+// The mic button uses the browser's built-in speech recognition (Chrome / Edge; no keys
+// or network calls in this code): the words appear in the box while speaking, then the
+// sentence is split into foods ("burger and french fries" → Burger, French Fries), each
+// is added, and /scan opens with the first one shown.
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import foods from "@/data/foods";
@@ -17,10 +21,34 @@ import { useMeals } from "@/components/MealProvider";
 // How long the "Scanning your meal…" view shows before the Menu page opens
 const scanDelay = 1500;
 
+// Split a spoken sentence into food names and match each to the food list:
+// "a burger and some fries" → ["Burger", "French Fries"]; unknown foods are kept as said
+function spokenFoods(text) {
+  return text
+    .toLowerCase()
+    .split(/\s*(?:,|&|\band\b|\bwith\b|\bplus\b)\s*/)
+    .map((part) => part.replace(/^(a|an|some|the|one)\s+/, "").trim())
+    .filter(Boolean)
+    .map(
+      (part) =>
+        foods.find((food) => food.toLowerCase() === part) ||
+        foods.find((food) => part.includes(food.toLowerCase())) ||
+        foods.find((food) => food.toLowerCase().includes(part)) ||
+        part.replace(/\b\w/g, (letter) => letter.toUpperCase())
+    );
+}
+
 export default function SearchBar() {
   const router = useRouter();
-  const { addFood, addScanned } = useMeals();
+  const { addFood, addScanned, setSelected } = useMeals();
   const fileInput = useRef(null);
+  const recognition = useRef(null);
+  // True while the mic is listening; voiceMessage explains problems (no support, blocked)
+  const [listening, setListening] = useState(false);
+  const [voiceMessage, setVoiceMessage] = useState("");
+
+  // Stop listening if the page changes while the mic is on
+  useEffect(() => () => recognition.current?.abort(), []);
   const [query, setQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   // Photo URL while the "Scanning your meal…" view is showing
@@ -59,6 +87,58 @@ export default function SearchBar() {
     router.push("/scan");
   }
 
+  // Mic button: start listening (or stop if already listening)
+  function toggleVoice() {
+    if (listening) {
+      recognition.current.stop();
+      return;
+    }
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Recognition) {
+      setVoiceMessage("Voice input isn't supported in this browser. Try Chrome or Edge.");
+      return;
+    }
+
+    let finalText = "";
+    const voice = new Recognition();
+    voice.lang = "en-US";
+    voice.interimResults = true;
+    // Show the words in the box as they are recognised
+    voice.onresult = (event) => {
+      const text = Array.from(event.results)
+        .map((result) => result[0].transcript)
+        .join("");
+      setQuery(text);
+      if (event.results[event.results.length - 1].isFinal) {
+        finalText = text;
+      }
+    };
+    voice.onerror = (event) => {
+      setVoiceMessage(
+        event.error === "not-allowed"
+          ? "Microphone access is blocked. Allow it in the browser to use voice."
+          : "Didn't catch that. Tap the mic and try again."
+      );
+    };
+    // When speaking ends: add every food that was said, show the first one on /scan
+    voice.onend = () => {
+      setListening(false);
+      const names = spokenFoods(finalText);
+      if (names.length === 0) return;
+      names.forEach((name) => addFood(name));
+      setSelected(names[0]);
+      setQuery("");
+      router.push("/scan");
+    };
+
+    recognition.current = voice;
+    setVoiceMessage("");
+    setShowSuggestions(false);
+    setQuery("");
+    setListening(true);
+    voice.start();
+  }
+
   // Camera button: open the photo picker
   function openPhotoPicker() {
     setShowSuggestions(false);
@@ -91,11 +171,27 @@ export default function SearchBar() {
         <input
           type="text"
           className="search-input"
-          placeholder="Search a meal or food"
+          placeholder={listening ? "Listening… e.g. burger and french fries" : "Search a meal or food"}
           aria-label="Search a meal or food"
           value={query}
           onChange={handleChange}
         />
+
+        {/* Mic button: speak the foods instead of typing (pulses while listening) */}
+        <button
+          type="button"
+          className={listening ? "icon-button listening" : "icon-button"}
+          aria-label={listening ? "Stop listening" : "Speak a meal"}
+          aria-pressed={listening}
+          disabled={scanning !== null}
+          onClick={toggleVoice}
+        >
+          <svg className="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="3" width="6" height="11" rx="3" />
+            <path d="M5 11a7 7 0 0 0 14 0" />
+            <line x1="12" y1="18" x2="12" y2="21" />
+          </svg>
+        </button>
 
         {/* Camera button: opens the photo picker straight away */}
         <button
@@ -111,6 +207,9 @@ export default function SearchBar() {
           </svg>
         </button>
       </div>
+
+      {/* Why voice did not work (unsupported browser, blocked mic, nothing heard) */}
+      {voiceMessage && <p className="voice-hint">{voiceMessage}</p>}
 
       {/* Hidden photo picker, opened by the camera button */}
       <input
