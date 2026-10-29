@@ -169,6 +169,7 @@ export default function SearchBar() {
     <form className="search-bar" onSubmit={handleSubmit}>
       <div className="search-field">
         <input
+          id="meal-search"
           type="text"
           className="search-input"
           placeholder={listening ? "Listening… e.g. burger and french fries" : "Search a meal or food"}

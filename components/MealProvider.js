@@ -52,7 +52,7 @@ export default function MealProvider({ children }) {
               ? { ...i, qty: i.qty + item.qty, image: item.image || i.image }
               : i
           )
-        : [...current, { ...item, portion: "regular", addedAt: timeNow() }]
+        : [...current, { ...item, portion: "regular", mealTime: "Now", addedAt: timeNow() }]
     );
     setSelected(item.name);
   }
@@ -85,6 +85,11 @@ export default function MealProvider({ children }) {
     setPlate(plate.map((i) => (i.name === name ? { ...i, portion } : i)));
   }
 
+  // Meal dropdown in the card (Now / Breakfast / Lunch / Dinner / Snack)
+  function setMealTime(name, mealTime) {
+    setPlate(plate.map((i) => (i.name === name ? { ...i, mealTime } : i)));
+  }
+
   // Add to Meal Plan (in the card): move that one item from the plate into Today's Meals
   // (not into History yet; that happens with Save meal)
   function addToMealPlan(name) {
@@ -108,10 +113,12 @@ export default function MealProvider({ children }) {
   }
 
   // Save meal (in Today's Meals): add every entry not saved yet to the History page with
-  // the current date and time (meal type from the time of day), then mark them as saved
+  // the current date and time, then mark them as saved. The meal type is the one picked in
+  // the card, or for "Now" the one that fits the time of day
   function saveToHistory() {
     const now = new Date();
     const hour = now.getHours();
+    const mealNow = hour < 11 ? "Breakfast" : hour < 16 ? "Lunch" : hour < 18 ? "Snack" : "Dinner";
     const toSave = saved.filter((entry) => !entry.savedToHistory).reverse();
 
     setHistoryMeals([
@@ -119,7 +126,7 @@ export default function MealProvider({ children }) {
       ...toSave.map(({ item }, index) => ({
         id: `saved-${now.getTime()}-${index}`,
         name: foodInfo[item.name]?.fullName || item.name,
-        type: hour < 11 ? "Breakfast" : hour < 16 ? "Lunch" : hour < 18 ? "Snack" : "Dinner",
+        type: item.mealTime === "Now" ? mealNow : item.mealTime,
         // Local date as "YYYY-MM-DD"
         date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`,
         time: timeNow(),
@@ -145,6 +152,7 @@ export default function MealProvider({ children }) {
         addScanned,
         changeQty,
         setPortion,
+        setMealTime,
         addToMealPlan,
         saveToHistory,
       }}

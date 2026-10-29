@@ -5,10 +5,10 @@
 // below it, and Today's Meals on the right. After Add Food Item the info card is cleared;
 // any other items still on the plate stay listed to pick from.
 // The plate is empty until a photo is scanned or a food is added on page 1.
-// Menu box: title with Add Menu (back to page 1 to add more), then — when more than one
-// item is on the plate — a list of the items (name and − qty +); clicking one shows its info in the card
+// Menu box: title with Add Meal (scrolls up to the search bar on this page), then — when more
+// than one item is on the plate — a list of the items (name and − qty +); clicking one shows its info in the card
 // below, laid out like a food-database entry: photo, full name, meal type and time added,
-// weight / quantity / portion chips, Quantity and Portion size controls, a collapsible
+// weight / quantity / portion chips, Quantity, Portion size and Meal controls, a collapsible
 // "See all nutrients" table and Add Food Item, plus nutrient donuts.
 // The plate and the selected item come from MealProvider, so items added on page 1
 // show up here after the ones already on the plate (and the new one is selected).
@@ -20,7 +20,6 @@
 // and Close review (or clicking the entry again) goes back to the plate.
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import SearchBar from "@/components/SearchBar";
 import { useMeals, formatQty, amountOf } from "@/components/MealProvider";
 import {
@@ -38,6 +37,9 @@ const nutrientMeta = [
   { key: "protein", label: "Protein", unit: "g" },
   { key: "fat", label: "Fat", unit: "g" },
 ];
+
+// Meal dropdown in the card; "Now" (default) picks the meal from the time it is saved
+const mealTimes = ["Now", "Breakfast", "Lunch", "Dinner", "Snack"];
 
 // Rows of the "See all nutrients" table, in order
 const nutrientRows = [
@@ -132,8 +134,17 @@ function QtyControl({ item, changeQty }) {
 }
 
 export default function ScanPanel() {
-  const { plate, selected, setSelected, saved, changeQty, setPortion, addToMealPlan, saveToHistory } =
-    useMeals();
+  const {
+    plate,
+    selected,
+    setSelected,
+    saved,
+    changeQty,
+    setPortion,
+    setMealTime,
+    addToMealPlan,
+    saveToHistory,
+  } = useMeals();
   // Today's Meals entries that Save meal has not added to History yet
   const unsaved = saved.filter((entry) => !entry.savedToHistory).length;
 
@@ -149,6 +160,12 @@ export default function ScanPanel() {
   const info = current ? foodInfo[current.name] || defaultFoodInfo : null;
   // Complete dish name for the card (falls back to the short name for unknown foods)
   const fullName = current ? info.fullName || current.name : "";
+
+  // + Add Meal: scroll to the search bar at the top of this page and focus it
+  function goToSearch() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.getElementById("meal-search").focus({ preventScroll: true });
+  }
 
   return (
     <main className="scan-page">
@@ -166,10 +183,10 @@ export default function ScanPanel() {
                 Close review
               </button>
             ) : (
-              // Back to page 1 to search or scan another item
-              <Link href="/" className="pill-button">
+              // Stay on this page: go up to the search bar above and put the cursor in it
+              <button type="button" className="pill-button" onClick={goToSearch}>
                 + Add Meal
-              </Link>
+              </button>
             )}
           </div>
 
@@ -241,7 +258,8 @@ export default function ScanPanel() {
                     <div className="result-details">
                       <h2 className="result-name">{fullName}</h2>
                       <p className="result-source">
-                        {info.mealType} · added at {current.addedAt}
+                        {current.mealTime === "Now" ? info.mealType : current.mealTime} · added
+                        at {current.addedAt}
                       </p>
 
                       {/* Weight, quantity and portion for what is on the plate (blue badges) */}
@@ -272,6 +290,20 @@ export default function ScanPanel() {
                               {Object.keys(portions).map((size) => (
                                 <option key={size} value={size}>
                                   {size}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <label className="portion-field">
+                            Meal:
+                            <select
+                              className="select"
+                              value={current.mealTime}
+                              onChange={(e) => setMealTime(current.name, e.target.value)}
+                            >
+                              {mealTimes.map((meal) => (
+                                <option key={meal} value={meal}>
+                                  {meal}
                                 </option>
                               ))}
                             </select>
